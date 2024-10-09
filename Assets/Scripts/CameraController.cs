@@ -2,25 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+// This script moves the character controller forward
+// and sideways based on the arrow keys.
+// It also jumps when pressing space.
+// Make sure to attach a character controller to the same game object.
+// It is recommended that you make only one call to Move or SimpleMove per frame.
+//Subscribe to ANF Studios YT on YouTube
+
+public class PlayerMovement : MonoBehaviour
 {
-    // Reference to the player GameObject.
-    public GameObject player;
+    PlayerController playerController;
 
-    // The distance between the camera and the player.
-    private Vector3 offset;
+    public float speed = 6.0f;
+    public float jumpSpeed = 8.0f;
+    public float gravity = 20.0f;
 
-    // Start is called before the first frame update.
+    private Vector3 moveDirection = Vector3.zero;
+
     void Start()
     {
-        // Calculate the initial offset between the camera's position and the player's position.
-        offset = transform.position - player.transform.position;
+        playerController = GetComponent<PlayerController>();
     }
 
-    // LateUpdate is called once per frame after all Update functions have been completed.
-    void LateUpdate()
+    void Update()
     {
-        // Maintain the same offset between the camera and player throughout the game.
-        transform.position = player.transform.position + offset;
+        if (playerController.isGrounded)
+        {
+            // We are grounded, so recalculate
+            // move direction directly from axes
+
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+            moveDirection *= speed;
+
+            if (Input.GetButton("Jump"))
+            {
+                moveDirection.y = jumpSpeed;
+            }
+        }
+
+        // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
+        // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
+        // as an acceleration (ms^-2)
+        moveDirection.y -= gravity * Time.deltaTime;
+
+        // Move the controller
+        playerController.Move(moveDirection * Time.deltaTime);
     }
 }

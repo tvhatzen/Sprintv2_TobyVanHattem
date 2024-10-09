@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     // UI object to display winning text.
     public GameObject winTextObject;
+    internal bool isGrounded;
 
     // Start is called before the first frame update.
     void Start()
@@ -92,5 +94,10 @@ public class PlayerController : MonoBehaviour
             // Display the win text.
             winTextObject.SetActive(true);
         }
+    }
+
+    internal void Move(Vector3 vector3)
+    {
+        throw new NotImplementedException();
     }
 }
