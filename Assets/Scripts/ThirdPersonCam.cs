@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class ThirdPersonCam : MonoBehaviour
 {
@@ -14,9 +13,10 @@ public class ThirdPersonCam : MonoBehaviour
 
     public Transform combatLookAt;
 
-    public GameObject thirdPersonCam;
-    public GameObject combatCam;
-    public GameObject topDownCam;
+    // Reference to Cinemachine virtual cameras
+    public CinemachineVirtualCamera thirdPersonCam;
+    public CinemachineVirtualCamera combatCam;
+    public CinemachineVirtualCamera topDownCam;
 
     public CameraStyle currentStyle;
     public enum CameraStyle
@@ -30,21 +30,24 @@ public class ThirdPersonCam : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Set the default camera style
+        SwitchCameraStyle(CameraStyle.Basic);
     }
 
     private void Update()
     {
-        // switch styles
+        // Switch styles based on number key input
         if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCameraStyle(CameraStyle.Basic);
         if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchCameraStyle(CameraStyle.Combat);
         if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchCameraStyle(CameraStyle.Topdown);
 
-        // rotate orientation
+        // Rotate orientation to follow the player
         Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
         orientation.forward = viewDir.normalized;
 
-        // roate player object
-        if(currentStyle == CameraStyle.Basic || currentStyle == CameraStyle.Topdown)
+        // Rotate player object
+        if (currentStyle == CameraStyle.Basic || currentStyle == CameraStyle.Topdown)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
@@ -53,25 +56,28 @@ public class ThirdPersonCam : MonoBehaviour
             if (inputDir != Vector3.zero)
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
         }
-
-        else if(currentStyle == CameraStyle.Combat)
+        else if (currentStyle == CameraStyle.Combat)
         {
             Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
             orientation.forward = dirToCombatLookAt.normalized;
-
             playerObj.forward = dirToCombatLookAt.normalized;
         }
     }
 
     private void SwitchCameraStyle(CameraStyle newStyle)
     {
-        combatCam.SetActive(false);
-        thirdPersonCam.SetActive(false);
-        topDownCam.SetActive(false);
+        // Reset all camera priorities
+        thirdPersonCam.Priority = 10;
+        combatCam.Priority = 10;
+        topDownCam.Priority = 10;
 
-        if (newStyle == CameraStyle.Basic) thirdPersonCam.SetActive(true);
-        if (newStyle == CameraStyle.Combat) combatCam.SetActive(true);
-        if (newStyle == CameraStyle.Topdown) topDownCam.SetActive(true);
+        // Activate the selected camera by increasing its priority
+        if (newStyle == CameraStyle.Basic)
+            thirdPersonCam.Priority = 20;  // Third-person camera takes control
+        else if (newStyle == CameraStyle.Combat)
+            combatCam.Priority = 20;  // Combat camera takes control
+        else if (newStyle == CameraStyle.Topdown)
+            topDownCam.Priority = 20;  // Top-down camera takes control
 
         currentStyle = newStyle;
     }

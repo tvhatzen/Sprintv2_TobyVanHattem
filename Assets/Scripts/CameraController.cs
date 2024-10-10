@@ -21,12 +21,14 @@ public class CameraController : MonoBehaviour
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
             transform.position = smoothedPosition;
 
-            // Make the camera look in the direction the second ball is facing
-            transform.LookAt(CameraRotationBall);
+            // Make the camera look in the direction the second ball is facing but offset the Y-axis to avoid vertical tilting
+            Vector3 lookDirection = new Vector3(CameraRotationBall.position.x, transform.position.y, CameraRotationBall.position.z);
+            transform.LookAt(lookDirection);
         }
         else
         {
-            Debug.LogWarning("No secondBall assigned to the camera controller!");
+            Debug.LogWarning("No CameraRotationBall assigned to the camera controller!");
         }
     }
 }
+
