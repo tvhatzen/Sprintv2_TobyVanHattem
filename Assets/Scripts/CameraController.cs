@@ -2,50 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// This script moves the character controller forward
-// and sideways based on the arrow keys.
-// It also jumps when pressing space.
-// Make sure to attach a character controller to the same game object.
-// It is recommended that you make only one call to Move or SimpleMove per frame.
-//Subscribe to ANF Studios YT on YouTube
-
-public class PlayerMovement : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
-    PlayerController playerController;
+    public Transform CameraRotationBall;  // Reference to the second ball (gizmo direction)
+    public float distance = 10.0f;   // Distance behind the second ball
+    public float height = 5.0f;      // Height of the camera from the second ball
+    public float smoothSpeed = 0.125f;  // Smoothing factor for the camera movement
 
-    public float speed = 6.0f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
-
-    private Vector3 moveDirection = Vector3.zero;
-
-    void Start()
+    void LateUpdate()
     {
-        playerController = GetComponent<PlayerController>();
-    }
-
-    void Update()
-    {
-        if (playerController.isGrounded)
+        // Ensure CameraRotationBall is assigned
+        if (CameraRotationBall != null)
         {
-            // We are grounded, so recalculate
-            // move direction directly from axes
+            // Calculate the desired position behind the second ball
+            Vector3 desiredPosition = CameraRotationBall.position - CameraRotationBall.forward * distance + Vector3.up * height;
 
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-            moveDirection *= speed;
+            // Smoothly move the camera to the desired position
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.position = smoothedPosition;
 
-            if (Input.GetButton("Jump"))
-            {
-                moveDirection.y = jumpSpeed;
-            }
+            // Make the camera look in the direction the second ball is facing
+            transform.LookAt(CameraRotationBall);
         }
-
-        // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
-        // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
-        // as an acceleration (ms^-2)
-        moveDirection.y -= gravity * Time.deltaTime;
-
-        // Move the controller
-        playerController.Move(moveDirection * Time.deltaTime);
+        else
+        {
+            Debug.LogWarning("No secondBall assigned to the camera controller!");
+        }
     }
 }
