@@ -54,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
         float speed = new Vector3(horizontalInput, 0, verticalInput).magnitude;
         animator.SetFloat("Speed", speed);
 
+        // Keep the ball upright in walking mode
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
     }
 
     private void MyInput()
