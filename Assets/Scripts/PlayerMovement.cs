@@ -23,13 +23,11 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    private Animator animator;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        animator = GetComponent<Animator>();
     }
     // Update is called once per frame
     private void Update()
@@ -50,9 +48,7 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = 0;
         }
 
-        //Animations
-        float speed = new Vector3(horizontalInput, 0, verticalInput).magnitude;
-        animator.SetFloat("Speed", speed);
+
 
         // Keep the ball upright in walking mode
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
