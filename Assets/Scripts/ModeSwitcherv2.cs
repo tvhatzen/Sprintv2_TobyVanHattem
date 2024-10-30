@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class ModeSwitcher : MonoBehaviour
 {
-    public PlayerMovement playerMovementScript; // Reference to the walking script
-    public RollingModeController rollingModeScript; // Reference to the rolling script
+    public PlayerMovement playerMovementScript;
+    public RollingModeController rollingModeScript;
     public GameObject RightFoot;
     public GameObject LeftFoot;
-    public Animator animator; // Animator for the ball
+    public Animator animator;
+    public bool isRolling { get; private set; }
 
-    private bool isRolling = false; // Tracks the current mode
-    private Rigidbody rb; // Rigidbody reference for physics interaction
-    public float jumpForce = 5f; // Jump force value
-    public float delayAfterPeak = 0.5f; // Delay before feet reappear
+    private Rigidbody rb;
+    public float jumpForce = 5f;
+    public float delayAfterPeak = 0.5f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rollingModeScript.enabled = false; // Start in walking mode
+        rollingModeScript.enabled = false;
     }
 
     void Update()
     {
-        // Switch modes when Shift key is pressed
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             ToggleMode();
@@ -32,7 +31,7 @@ public class ModeSwitcher : MonoBehaviour
 
     private void ToggleMode()
     {
-        isRolling = !isRolling; // Switch the mode state
+        isRolling = !isRolling;
 
         if (isRolling)
         {
@@ -46,57 +45,43 @@ public class ModeSwitcher : MonoBehaviour
 
     private void TransitionToRollingMode()
     {
-        // Disable feet or animations related to walking (if any)
         SetFeetVisibility(false);
+        if (animator != null) animator.enabled = false;
 
-        if (animator != null)
-        {
-            animator.enabled = false;
-        }
-
-        // Enable Rolling Mode and disable Walking Mode
         rollingModeScript.enabled = true;
         playerMovementScript.enabled = false;
+
+        rb.constraints = RigidbodyConstraints.None;
+        rb.velocity = Vector3.zero;
     }
 
     private void TransitionToWalkingMode()
     {
-        // Add a small upward force to avoid floor collision
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Adjust as needed
-
-        // Start the coroutine to show feet with a delay after reaching jump peak
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         StartCoroutine(ShowFeetAfterPeak());
 
-        if (animator != null)
-        {
-            animator.enabled = true;
-        }
+        if (animator != null) animator.enabled = true;
 
-        // Enable Walking Mode and disable Rolling Mode
         rollingModeScript.enabled = false;
         playerMovementScript.enabled = true;
+
+        rb.constraints = RigidbodyConstraints.FreezeRotationX |
+                         RigidbodyConstraints.FreezeRotationZ |
+                         RigidbodyConstraints.FreezeRotationY;
+
+        rb.velocity = Vector3.zero;
     }
 
-    // Coroutine to wait for peak and then reveal feet
     private IEnumerator ShowFeetAfterPeak()
     {
-        // Wait until the ball reaches the peak of its jump
         yield return new WaitUntil(() => rb.velocity.y <= 0);
-
-        // Optional: Add a small delay after reaching the peak
         yield return new WaitForSeconds(delayAfterPeak);
-
-        // Make the feet visible again
         SetFeetVisibility(true);
     }
 
-    // Helper method to control the visibility of feet (or related objects)
     private void SetFeetVisibility(bool isVisible)
     {
-        // Add logic to hide/show feet or related components
-        // Example: feetObject.SetActive(isVisible);
         RightFoot.SetActive(isVisible);
         LeftFoot.SetActive(isVisible);
     }
 }
-
