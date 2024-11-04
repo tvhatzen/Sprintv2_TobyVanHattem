@@ -15,7 +15,7 @@ public class ThirdPersonCam : MonoBehaviour
         if (!modeSwitcher.isRolling)
         {
             Vector3 viewDir = player.position - new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            orientation.forward = viewDir.normalized;
+            //orientation.forward = viewDir.normalized;
 
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
@@ -23,7 +23,7 @@ public class ThirdPersonCam : MonoBehaviour
 
             if (inputDir != Vector3.zero)
             {
-                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+              //  playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
             }
         }
         else

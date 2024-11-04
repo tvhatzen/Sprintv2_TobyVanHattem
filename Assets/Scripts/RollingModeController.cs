@@ -6,10 +6,12 @@ public class RollingModeController : MonoBehaviour
     public float rollSpeed = 10f;
     public Transform orientation;
 
+    Camera mainCamera;
     private Rigidbody rb;
 
     void Start()
     {
+        mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -23,10 +25,18 @@ public class RollingModeController : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        Vector3 movement = orientation.forward * moveZ + orientation.right * moveX;
+        Vector3 cameraForward = mainCamera.transform.forward;
+        cameraForward.y = 0;
+        cameraForward.Normalize();
+
+        Vector3 cameraRight = mainCamera.transform.right;
+        cameraRight.y = 0;
+        cameraRight.Normalize();
+
+        Vector3 movement = cameraForward * moveZ + cameraRight * moveX;
         movement.y = 0f;
 
-        rb.AddForce(movement.normalized * rollSpeed, ForceMode.Acceleration);
+        rb.AddForce(movement.normalized * rollSpeed, ForceMode.Force);
 
         LimitRollingSpeed();
     }

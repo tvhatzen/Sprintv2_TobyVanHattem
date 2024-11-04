@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatisGround);
 
@@ -28,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
 
         rb.drag = grounded ? groundDrag : 0;
+        Vector3 camforward = Camera.main.transform.forward;
+        camforward.y = 0;
+        transform.forward = camforward;
     }
 
     private void MyInput()
@@ -36,7 +39,9 @@ public class PlayerMovement : MonoBehaviour
         float verticalInput = Input.GetAxisRaw("Vertical");
 
         Vector3 moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        moveDirection = moveDirection.normalized * moveSpeed * 10f;
+        moveDirection.y = 0;
+        rb.AddForce(moveDirection, ForceMode.Force);
     }
 
     private void SpeedControl()
