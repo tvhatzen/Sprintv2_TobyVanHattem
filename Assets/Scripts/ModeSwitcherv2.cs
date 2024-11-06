@@ -8,8 +8,10 @@ public class ModeSwitcher : MonoBehaviour
     public RollingModeController rollingModeScript;
     public GameObject RightFoot;
     public GameObject LeftFoot;
+    public GameObject Lance;
     public Animator animator;
     public bool isRolling { get; private set; }
+    bool isVisible = true;
 
     private Rigidbody rb;
     public float jumpForce = 5f;
@@ -83,5 +85,6 @@ public class ModeSwitcher : MonoBehaviour
     {
         RightFoot.SetActive(isVisible);
         LeftFoot.SetActive(isVisible);
+        Lance.SetActive(isVisible);
     }
 }
