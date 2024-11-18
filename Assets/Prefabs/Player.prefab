@@ -101,6 +101,7 @@ MonoBehaviour:
   rollingModeScript: {fileID: 3830888828577030210}
   RightFoot: {fileID: 6177651443734714868}
   LeftFoot: {fileID: 4325344698685880257}
+  Lance: {fileID: 0}
   animator: {fileID: 1459430306492660717}
   jumpForce: 5
   delayAfterPeak: 0.5
@@ -134,6 +135,7 @@ MonoBehaviour:
   rollingModeScript: {fileID: 3830888828577030210}
   RightFoot: {fileID: 6177651443734714868}
   LeftFoot: {fileID: 4325344698685880257}
+  Lance: {fileID: 0}
   animator: {fileID: 1459430306492660717}
   jumpForce: 5
   delayAfterPeak: 0.5
@@ -333,7 +335,7 @@ GameObject:
   - component: {fileID: 5448490841146774770}
   m_Layer: 0
   m_Name: PlayerObj
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
