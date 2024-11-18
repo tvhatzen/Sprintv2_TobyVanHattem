@@ -11,7 +11,6 @@ public class ModeSwitcher : MonoBehaviour
     public GameObject Lance;
     public Animator animator;
     public bool isRolling { get; private set; }
-    bool isVisible = true;
 
     private Rigidbody rb;
     public float jumpForce = 5f;
