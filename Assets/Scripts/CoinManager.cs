@@ -6,18 +6,19 @@ using TMPro;
 public class CoinManager : MonoBehaviour
 {
     public GameObject coinPrefab; // Assign the Coin prefab in the Inspector
-    public TextMeshProUGUI scoreText; // Assign the TextMeshProUGUI element in the Inspector
     public int maxCoins = 30; // Maximum number of coins allowed in the world
     public float coinLifetime = 30f; // Time before a coin despawns
     public LayerMask whatisGround; // Assign the layer of ground in the Inspector
     public Vector3 spawnAreaSize = new Vector3(20f, 0f, 20f); // Define the area for spawning coins
     public float spawnInterval = 2f; // Time interval between coin spawns
 
-    private int score = 0; // Keeps track of the player's score
     private List<GameObject> coins = new List<GameObject>(); // List to keep track of active coins
+    private GameTimer gameTimer; // Reference to the GameTimer script
 
     void Start()
     {
+        gameTimer = FindObjectOfType<GameTimer>(); // Find the GameTimer in the scene
+
         // Start the spawn coroutine
         StartCoroutine(SpawnCoinsOverTime());
     }
@@ -72,8 +73,10 @@ public class CoinManager : MonoBehaviour
         coins.Remove(coin);
         Destroy(coin);
 
-        // Increment the score
-        score += 10; // Add your desired score value here
-        scoreText.text = "Score: " + score;
+        // Notify GameTimer to update the score
+        if (gameTimer != null)
+        {
+            gameTimer.AddScore(10); // Increment score by 10 (or desired value)
+        }
     }
 }

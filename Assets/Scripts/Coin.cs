@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            CoinManager manager = FindObjectOfType<CoinManager>();
-            if (manager != null)
+            CoinManager coinManager = FindObjectOfType<CoinManager>();
+            if (coinManager != null)
             {
-                manager.CollectCoin(gameObject);
+                coinManager.CollectCoin(gameObject);
             }
         }
     }
