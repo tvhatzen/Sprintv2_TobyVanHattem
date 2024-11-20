@@ -41,4 +41,12 @@ public class LeaderboardManager : MonoBehaviour
 
         return scores;
     }
+
+    // Add this new method
+    public static void ClearLeaderboard()
+    {
+        PlayerPrefs.DeleteKey(leaderboardKey); // Deletes the leaderboard data
+        PlayerPrefs.Save();                   // Ensures changes are written to disk
+        Debug.Log("Leaderboard has been cleared.");
+    }
 }

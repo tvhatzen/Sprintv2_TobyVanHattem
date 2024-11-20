@@ -10,6 +10,7 @@ public class GameTimer : MonoBehaviour
     public GameObject gameOverMenu;          // GameOver panel
     public TMP_Text finalScoreText;          // Final score display on GameOver panel
     public TMP_Text leaderboardText;         // Leaderboard display on GameOver panel
+    public GameObject otherPanel;            // Reference to the other panel
 
     private bool gameEnded = false;          // Tracks if the game has ended
     private int currentScore = 0;            // Player's score
@@ -58,6 +59,12 @@ public class GameTimer : MonoBehaviour
         gameEnded = true;
         Time.timeScale = 0f; // Pause the game
         gameOverMenu.SetActive(true);
+
+        // Deactivate the other panel
+        if (otherPanel != null)
+        {
+            otherPanel.SetActive(false);
+        }
 
         // Show the final score in the GameOver menu
         finalScoreText.text = $"Your Score: {currentScore}";
